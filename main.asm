@@ -23,23 +23,50 @@ StopWDT     mov.w   #WDTPW|WDTHOLD,&WDTCTL  ; Stop watchdog timer
 ;-------------------------------------------------------------------------------
 ; Main loop here
 ;-------------------------------------------------------------------------------
-		   mov.w #2D97h,R4
-           mov.w #6239h,R5
 
-           jmp AndFunc
+           mov.w #0018h,R4
+           mov.w #00DCh,R5
 
-AndFunc:
-		   and R4,R5
-		   mov.w R5, R6
+           cmp R4,R5;
 
-		   jmp OrFunc
+           jl less;
+           jge greater_equal;
 
-OrFunc:
-	       bis #0000h, R6
-	       mov.w R6, &203Ch
+           jmp $;
 
-	       ret
+less:
+		   call #less_function;
+		   jmp $;
 
+greater_equal:
+           jeq equal
+	       call #greater_function;
+	       jmp $;
+
+less_function:
+
+		   mov.w #000Ah,&2000h;
+		   mov.w #0009h,&2002h;
+		   mov.w #0008h,&2004h;
+		   mov.w #0007h,&2006h;
+		   mov.w #0006h,&2008h;
+		   sub #1h,R4;
+		   ret;
+
+equal:
+
+	       jmp $;
+
+greater_function:
+
+
+		   mov.w #0001h,&2010h;
+		   mov.w #0002h,&2012h;
+		   mov.w #0003h,&2014h;
+		   mov.w #0004h,&2016h;
+		   mov.w #0005h,&2018h;
+		   sub #1h,R4;
+		   ret;
 ;-------------------------------------------------------------------------------
 ; Stack Pointer definition
 ;-------------------------------------------------------------------------------
